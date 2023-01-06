@@ -230,7 +230,7 @@ runs:
             sudo apt-get install -y systemd-container
             sudo -E systemd-nspawn -q -a --bind=${script_dir}:${chroot_script_dir} -D ${{ steps.mount_image.outputs.mount }} ${{ inputs.systemd_nspawn_options }} ${shell_path} ${shell_opts} ${chroot_script_dir}/commands.sh
         else
-            sudo -E chroot  ${{ steps.mount_image.outputs.mount }} /bin/bash -c 'echo "runner ALL=(ALL:ALL) NOPASSWD:ALL" >> /etc/sudoers; groupadd -g 121 docker; useradd -u 1001 --shell /bin/bash -rmUG docker,adm,systemd-journal runner'
+            sudo -E chroot  ${{ steps.mount_image.outputs.mount }} /bin/bash -c 'echo "runner ALL=(ALL:ALL) NOPASSWD:ALL" >> /etc/sudoers; useradd -u 1001 --shell /bin/bash -rmUG docker,adm,systemd-journal runner'
             sudo -E chroot --userspec=runner:docker --groups=docker,adm,systemd-journal ${{ steps.mount_image.outputs.mount }} ${shell_path} ${shell_opts} ${chroot_script_dir}/commands.sh
         fi
         rc=$?
