@@ -70,6 +70,7 @@ if [ "${use_systemd_nspawn}x" = "x" -o "${use_systemd_nspawn}x" = "nox" ]; then
     mount --bind /sys "${mount}/sys"
     mount --bind /dev "${mount}/dev"
     mount --bind /dev/pts "${mount}/dev/pts"
+    mkdir -p "${mount}/lib/modules/$(uname -r)"
     mount --bind /lib/modules/$(uname -r) "${mount}/lib/modules/$(uname -r)"
 fi
 
