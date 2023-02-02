@@ -31,6 +31,7 @@ if [[ -d "${mount}" ]]; then
     umount "${mount}/proc" || true
     umount "${mount}/sys" || true
     umount "${mount}/boot" || true
+    unmount "${mount}/lib/modules/$(uname -r)" || true
     umount "${mount}" || true
 
     if [[ "${optimize}x" == "x" || "${optimize}x" == "yesx" ]]; then
