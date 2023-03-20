@@ -66,40 +66,44 @@ case $1 in
 esac
 
 tempdir=${RUNNER_TEMP:-/home/actions/temp}/arm-runner
-rm -rf ${tempdir}
-mkdir -p ${tempdir}
-cd ${tempdir}
-wget --trust-server-names --content-disposition -q ${url}
-case `echo *` in
-    *.zip)
-        unzip -u *
-    ;;
-    *.7z)
-        7zr e *
-    ;;
-    *.xz)
-        xz -d *
-    ;;
-    *.gz)
-        gzip -d *
-    ;;
-    *.img)
-    ;;
-    *.zip\?*)
-        unzip -u *
-    ;;
-    *.7z\?*)
-        7zr e *
-    ;;
-    *.xz\?*)
-        xz -d *
-    ;;
-    *.gz\?*)
-        gzip -d *
-    ;;
-    *)
-        echo "Don't know how to uncompress image " *
-        exit 1
-esac
-mv "$(ls *.img */*.img 2>/dev/null | head -n 1)" arm-runner.img
+if [[ ! -f "${tempdir}/$(basename $url)" ]]; then
+    rm -rf ${tempdir}
+    mkdir -p ${tempdir}
+    cd ${tempdir}
+    wget --trust-server-names --content-disposition -q ${url}
+fi
+if [[ ! -f "${tempdir}/arm-runner.img" ]]; then
+    case `echo *` in
+        *.zip)
+            unzip -u *
+        ;;
+        *.7z)
+            7zr e *
+        ;;
+        *.xz)
+            xz -d *
+        ;;
+        *.gz)
+            gzip -d *
+        ;;
+        *.img)
+        ;;
+        *.zip\?*)
+            unzip -u *
+        ;;
+        *.7z\?*)
+            7zr e *
+        ;;
+        *.xz\?*)
+            xz -d *
+        ;;
+        *.gz\?*)
+            gzip -d *
+        ;;
+        *)
+            echo "Don't know how to uncompress image " *
+            exit 1
+    esac
+    mv "$(ls *.img */*.img 2>/dev/null | head -n 1)" arm-runner.img
+fi
 echo "image=${tempdir}/arm-runner.img" >> "$GITHUB_OUTPUT"
