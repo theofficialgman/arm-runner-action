@@ -129,6 +129,7 @@ runs:
         restore-keys: ${{ inputs.base_image }}
     - name: Download base image
       run: |
+        ls -l ${{ runner.temp }}/arm-runner
         bash ${{ github.action_path }}/download_image.sh ${{ inputs.base_image }}
       shell: bash
       id: download_image
