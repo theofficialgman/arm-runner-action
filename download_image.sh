@@ -105,6 +105,6 @@ if [[ ! -f "${tempdir}/arm-runner.img" ]]; then
     mv "$(ls *.img */*.img 2>/dev/null | head -n 1)" arm-runner.img
 fi
 cd ${tempdir}
-rm -rf !(arm-runner.img)
+find . -type f -not -name 'arm-runner.img' -delete
 ls -l ${tempdir}
 echo "image=${tempdir}/arm-runner.img" >> "$GITHUB_OUTPUT"
