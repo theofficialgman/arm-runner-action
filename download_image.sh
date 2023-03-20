@@ -66,13 +66,11 @@ case $1 in
 esac
 
 tempdir=${RUNNER_TEMP:-/home/actions/temp}/arm-runner
-if [[ ! -f "${tempdir}/$(basename $url)" ]]; then
+if [[ ! -f "${tempdir}/arm-runner.img" ]]; then
     rm -rf ${tempdir}
     mkdir -p ${tempdir}
     cd ${tempdir}
     wget --trust-server-names --content-disposition -q ${url}
-fi
-if [[ ! -f "${tempdir}/arm-runner.img" ]]; then
     case `echo *` in
         *.zip)
             unzip -u *
@@ -106,4 +104,5 @@ if [[ ! -f "${tempdir}/arm-runner.img" ]]; then
     esac
     mv "$(ls *.img */*.img 2>/dev/null | head -n 1)" arm-runner.img
 fi
+ls -l ${tempdir}
 echo "image=${tempdir}/arm-runner.img" >> "$GITHUB_OUTPUT"
