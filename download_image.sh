@@ -104,5 +104,7 @@ if [[ ! -f "${tempdir}/arm-runner.img" ]]; then
     esac
     mv "$(ls *.img */*.img 2>/dev/null | head -n 1)" arm-runner.img
 fi
+cd ${tempdir}
+rm -rf !(arm-runner.img)
 ls -l ${tempdir}
 echo "image=${tempdir}/arm-runner.img" >> "$GITHUB_OUTPUT"
