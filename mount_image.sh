@@ -20,13 +20,24 @@ loopdev=$(losetup --find --show --partscan ${image})
 echo "Created loopback device ${loopdev}"
 echo "loopdev=${loopdev}" >> "$GITHUB_OUTPUT"
 
+# get number of partitions
+num_partitions=$(grep -c $(basename $loopdev) /proc/partitions)
+
+# if partition 1 does not exist, assume image is a single partition image and not a full disk image
+if ls "${loopdev}p1"; then
+    loopdev_rootpartition="${loopdev}p${rootpartition}"
+    loopdev_bootpartition="${loopdev}p${bootpartition}"
+else
+    loopdev_rootpartition="${loopdev}"
+fi
+
 if [ ${additional_mb} -gt 0 ]; then
     if ( (parted --script $loopdev print || false) | grep "Partition Table: gpt" > /dev/null); then
         sgdisk -e "${loopdev}"
     fi
     parted --script "${loopdev}" resizepart ${rootpartition} 100%
-    e2fsck -p -f "${loopdev}p${rootpartition}"
-    resize2fs "${loopdev}p${rootpartition}"
+    e2fsck -p -f "${loopdev_rootpartition}"
+    resize2fs "${loopdev_rootpartition}"
     echo "Finished resizing disk image."
 fi
 
@@ -47,11 +58,11 @@ waitForFile() {
 sync
 partprobe -s "${loopdev}"
 if [ "x$bootpartition" != "x" ]; then
-    bootdev=$(waitForFile "${loopdev}p${bootpartition}")
+    bootdev=$(waitForFile "${loopdev_bootpartition}")
 else
     bootdev=
 fi
-rootdev=$(waitForFile "${loopdev}p${rootpartition}")
+rootdev=$(waitForFile "${loopdev_rootpartition}")
 
 # Mount the image
 mount=${RUNNER_TEMP:-/home/actions/temp}/arm-runner/mnt

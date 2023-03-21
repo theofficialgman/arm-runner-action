@@ -102,7 +102,13 @@ if [[ ! -f "${tempdir}/arm-runner.img" ]]; then
             echo "Don't know how to uncompress image " *
             exit 1
     esac
-    mv "$(ls *.img */*.img 2>/dev/null | head -n 1)" arm-runner.img
+    # support Switchroot L4T Image format
+    PATTERN="l4t.*"
+    if compgen -G $PATTERN > /dev/null; then
+        cat l4t.* > arm-runner.img
+    else
+        mv "$(ls *.img */*.img 2>/dev/null | head -n 1)" arm-runner.img
+    fi
 fi
 cd ${tempdir}
 find . -type f -not -name 'arm-runner.img' -delete
