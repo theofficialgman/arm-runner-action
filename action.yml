@@ -130,6 +130,8 @@ runs:
         restore-keys: ${{ inputs.base_image }}
     - name: Download base image
       run: |
+        sudo rm -rf ${{ runner.temp }}/arm-runner/*
+        sync
         bash ${{ github.action_path }}/download_image.sh ${{ inputs.base_image }}
         ls -l ${{ runner.temp }}/arm-runner
         sync
