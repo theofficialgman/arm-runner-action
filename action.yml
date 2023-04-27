@@ -132,6 +132,7 @@ runs:
       run: |
         bash ${{ github.action_path }}/download_image.sh ${{ inputs.base_image }}
         ls -l ${{ runner.temp }}/arm-runner
+        sync
       shell: bash
       id: download_image
     - name: Save base image (if needed)
