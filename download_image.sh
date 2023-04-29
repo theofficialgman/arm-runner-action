@@ -65,12 +65,14 @@ case $1 in
     ;;
 esac
 
+echo "URL is: $url"
+
 tempdir=${RUNNER_TEMP:-/home/actions/temp}/arm-runner
 if [[ ! -f "${tempdir}/arm-runner.img" ]]; then
     rm -rf ${tempdir}
     mkdir -p ${tempdir}
     cd ${tempdir}
-    wget --trust-server-names --content-disposition -q ${url}
+    wget -q --trust-server-names --content-disposition --user-agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.67 Safari/537.36" ${url}
     case `echo *` in
         *.zip)
             unzip -u *
