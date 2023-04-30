@@ -80,6 +80,10 @@ inputs:
     description: 'Exports $GITHUB_ENV from the image environment to subsequent tasks'
     required: false
     default: 'no'
+  enable_image_caching:
+    description: 'Cache images using actions/cache'
+    required: false
+    default: 'yes'
 outputs:
   image:
     description: "Path to image"
@@ -139,7 +143,7 @@ runs:
       id: download_image
     - name: Save base image (if needed)
       id: cache_save
-      if: steps.cache_restore.outputs.cache-hit != 'true'
+      if: steps.cache_restore.outputs.cache-hit != 'true' && ${{ inputs.enable_image_caching == 'yes' }}
       uses: actions/cache/save@v3
       with:
         path: ${{ runner.temp }}/arm-runner
