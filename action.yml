@@ -84,6 +84,10 @@ inputs:
     description: 'Cache images using actions/cache'
     required: false
     default: 'yes'
+  install_standard_packages:
+    description: 'Install debian base standard packages'
+    required: false
+    default: 'no'
 outputs:
   image:
     description: "Path to image"
@@ -187,6 +191,16 @@ runs:
             exit_on_fail=''
         ;;
         esac
+
+        case ${{ inputs.install_standard_packages }} in
+        yes|true)
+            sudo chroot ${{ steps.mount_image.outputs.mount }} tasksel install --new-install standard
+            sudo chroot ${{ steps.mount_image.outputs.mount }} apt update
+            sudo chroot ${{ steps.mount_image.outputs.mount }} apt purge --autoremove initramfs-tools -y
+            sudo chroot ${{ steps.mount_image.outputs.mount }} apt install task-lxde-desktop -y
+        ;;
+        esac
+
         shell_with_opts="${{ inputs.shell }}"
         shell=${shell_with_opts%% *}
         if [ "${shell}" != "${shell_with_opts}" ]; then
