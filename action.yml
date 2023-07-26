@@ -263,7 +263,8 @@ runs:
         ARM_RUNNER_INPUT_COMMANDS_EOF
         if [ "${{ inputs.use_systemd_nspawn }}x" != "x" -a "${{ inputs.use_systemd_nspawn }}x" != "nox" ]; then
             sudo apt-get install -y systemd-container
-            sudo -E systemd-nspawn -q -a --bind=${script_dir}:${chroot_script_dir} -D ${{ steps.mount_image.outputs.mount }} ${{ inputs.systemd_nspawn_options }} ${shell_path} ${shell_opts} ${chroot_script_dir}/commands.sh
+            sudo -E chroot  ${{ steps.mount_image.outputs.mount }} /bin/bash -c 'echo "runner ALL=(ALL:ALL) NOPASSWD:ALL" >> /etc/sudoers; groupadd docker; useradd -u 1001 --shell /bin/bash -rmUG docker,adm,systemd-journal runner'
+            sudo -E systemd-nspawn -q -a --user=runner --bind=${script_dir}:${chroot_script_dir} -D ${{ steps.mount_image.outputs.mount }} ${{ inputs.systemd_nspawn_options }} ${shell_path} ${shell_opts} ${chroot_script_dir}/commands.sh
         else
             sudo -E chroot  ${{ steps.mount_image.outputs.mount }} /bin/bash -c 'echo "runner ALL=(ALL:ALL) NOPASSWD:ALL" >> /etc/sudoers; groupadd docker; useradd -u 1001 --shell /bin/bash -rmUG docker,adm,systemd-journal runner'
             sudo -E chroot --userspec=runner:docker --groups=docker,adm,systemd-journal ${{ steps.mount_image.outputs.mount }} ${shell_path} ${shell_opts} ${chroot_script_dir}/commands.sh
