@@ -248,7 +248,7 @@ runs:
         fi
         case "${{ inputs.import_github_env }}" in
         yes|true)
-            export | sed -e 's/^declare -x //g;s/='\''\(.*\)'\''$/=\1/g' >> ${script_dir}/environment.sh
+            export | awk '/declare -x/ && !/=/ {next} {print}' | sed -e 's/^declare -x //g;s/='\''\(.*\)'\''$/=\1/g' >> ${script_dir}/environment.sh
             echo ". ${chroot_script_dir}/environment.sh" >> ${script_path}
         ;;
         esac
