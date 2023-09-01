@@ -97,7 +97,7 @@ runs:
   steps:
     - name: Install dependencies
       run: |
-        wget -O /tmp/qemu-user-static.deb  http://archive.ubuntu.com/ubuntu/pool/universe/q/qemu/qemu-user-static_8.0.2+dfsg-2ubuntu1_amd64.deb
+        wget -O /tmp/qemu-user-static.deb  http://archive.ubuntu.com/ubuntu/pool/universe/q/qemu/qemu-user-static_8.0.4+dfsg-1ubuntu1_amd64.deb
         sudo apt-get update && sudo apt-get install -y binfmt-support parted wget dosfstools zip /tmp/qemu-user-static.deb
       shell: bash
     - name: Install qemu wrapper
