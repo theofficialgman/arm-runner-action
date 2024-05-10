@@ -134,7 +134,7 @@ runs:
         sudo update-binfmts --package arm-runner-action --install arm-runner-action-qemu-aarch64 /usr/bin/qemu-aarch64-static0 --magic '\x7f\x45\x4c\x46\x02\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\xb7\x00' --mask '\xff\xff\xff\xff\xff\xff\xff\x00\xff\xff\xff\xff\xff\xff\xff\xff\xfe\xff\xff\xff' --credentials yes --fix-binary yes
     - name: Restore base image (if available)
       id: cache_restore
-      uses: actions/cache/restore@v3
+      uses: actions/cache/restore@v4
       with:
         path: ${{ runner.temp }}/arm-runner
         key: ${{ inputs.base_image }}
@@ -151,7 +151,7 @@ runs:
     - name: Save base image (if needed)
       id: cache_save
       if: steps.cache_restore.outputs.cache-hit != 'true' && inputs.enable_image_caching == 'yes'
-      uses: actions/cache/save@v3
+      uses: actions/cache/save@v4
       with:
         path: ${{ runner.temp }}/arm-runner
         key: ${{ inputs.base_image }}
